@@ -1,0 +1,101 @@
+#include"boggleutil.h"
+#include <set>
+#include <string>
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+
+//In this file, implement all of the operations your data structures support (you have declared these operations in boggleutil.h).
+
+using namespace std;
+
+Trie::~Trie(){
+	if(root!=0)clear(root);
+}
+
+void Trie::build(const set<string>& word_list){
+        set<string>::iterator vit=word_list.begin();
+	set<string>::iterator vend=word_list.end();
+        for(;vit!=vend;vit++){
+                string curr_word=*vit;
+                TrieNode* curr_node=this->getRoot();
+		//cout<<"root value is "<<curr_node->val<<endl;
+                for(unsigned int j=0;j<curr_word.size();j++){
+			char curr_letter=curr_word[j];
+			this->InsertLetter(curr_letter,curr_node->middleNode,curr_node);
+			//cout<<"print current node val"<<endl;
+			//cout<<curr_node->val<<endl;
+			if(j==curr_word.size()-1)curr_node->setEnd();
+		}
+	}
+	//cout<<"root's next value end is "<<root->middleNode->getEnd()<<endl;
+	//cout<<"root's next next value end is "<<root->middleNode->rightNode->getEnd()<<endl;
+}
+
+bool Trie::find(const string& word, TrieNode* startnode, TrieNode* & endnode){
+        TrieNode* curr_node=startnode->middleNode;
+	//cout<<"In find, print the 1st node val: "<<curr_node->val<<endl;
+        for(unsigned int i=0;i<word.size();i++){
+		//cout<<"The "<<i<<"th letter is: "<<word[i]<<endl;
+		bool findLetter=false;
+		while(curr_node!=0){
+			if(word[i]<curr_node->val){
+				//cout<<"find: go to left"<<endl;
+				curr_node=curr_node->leftNode;
+			}
+			else if(word[i]>curr_node->val){
+				//cout<<"find: go to right"<<endl;
+				curr_node=curr_node->rightNode;
+			}
+			else if(word[i]==curr_node->val){
+				//cout<<"find the letter!"<<endl;
+				findLetter=true;
+				endnode=curr_node;
+				curr_node=curr_node->middleNode;
+				break;
+			}
+                }
+		if(!findLetter){
+			//cout<<"we can't find the letter"<<endl;
+			return false;
+		}
+	}
+	//if(!curr_node->isEnd)return false;
+	//endnode=curr_node;
+	//cout<<"print the endnode's value: "<<endnode->val<<endl;
+	return true;
+}
+
+void Trie::clear(TrieNode *node){
+	if(node!=0){
+		if(node->leftNode!=0)clear(node->leftNode);
+		if(node->middleNode!=0)clear(node->middleNode);
+		if(node->rightNode!=0)clear(node->rightNode);
+		delete(node);
+	}
+}
+
+void Trie::InsertLetter(char a, TrieNode* & node, TrieNode* & curr_node){
+	if(node==0){
+		//cout<<"go from root"<<endl;
+		node=new TrieNode(a,false);
+		curr_node=node;
+	}
+	else if(a<node->val){
+		//cout<<"go to the left side"<<endl;
+		InsertLetter(a,node->leftNode,curr_node);
+	}
+	else if(a>node->val){
+		//cout<<"go to the right side"<<endl;
+		InsertLetter(a,node->rightNode,curr_node);
+	}
+	else if(a==node->val)curr_node=node;
+}
+
+//bool Trie::findOne(TrieNode* startnode, TrieNode* endnode){
+//	bool result=false;
+//	TrieNode* curr=startnode->middle;
+//	while(curr!=0){
+
+//	}
+//}

@@ -1,0 +1,20 @@
+# Benchmarking average number of comparisons for successful find
+# Data structure: rst
+# Data: sorted
+# N is powers of 2, minus 1, from 1 to 32768
+# Averaging over 5 runs for each N
+1     2       0       
+3     3.46667 0.4     
+7     4.71429 0.372526
+15    6.88    1.04341 
+31    8.89032 1.43982 
+63    11.3937 2.20445 
+127   12.4283 1.26768 
+255   13.8251 0.217844
+511   16.8211 1.16    
+1023  19.8571 1.90038 
+2047  20.5985 1.33159 
+4095  22.2842 0.450937
+8191  24.3391 0.754599
+16383 26.949  1.81809 
+32767 28.715  0.411089

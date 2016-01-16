@@ -1,0 +1,285 @@
+#include "RST.hpp"
+#include "countint.hpp"
+#include "BSTIterator.hpp"
+#include "BST.hpp"
+#include <cmath>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <set>
+#include <math.h>
+#include <string.h>
+#include <iomanip>
+
+using namespace std;
+
+
+//int myrandom (int i) { return rand()%i;}
+
+int main(int argc, char** argv) {
+    cout << "# Benchmarking average number of comparisons for successful find" << endl;
+    cout << "# Data structure: " << argv[1] << endl;
+    cout << "# Data: " << argv[2] << endl;
+    cout << "# N is powers of 2, minus 1, from 1 to " << atoi(argv[3]) << endl;
+    cout << "# Averaging over " << atoi(argv[4]) << " runs for each N" << endl;
+    //cout << "#" << endl;
+    //cout << "# N 	     avgcomps 	     stdev" << endl;
+    int turn=atoi(argv[4]);
+    int N=atoi(argv[3]);
+    if(strcmp(argv[1],"rst")==0&&strcmp(argv[2],"sorted")==0){
+        int n=1;
+        while(n<=N){
+            
+            double avgcomps=0.0;
+            double sigma=0.0;
+            double avg_turn[turn];
+            for(int i=0;i<turn;i++){
+		RST<countint> r = RST<countint>();
+                vector<countint> v;
+                v.clear();
+                for(int j=0;j<n;j++){
+                    v.push_back(j);
+                }
+                vector<countint>::iterator vit=v.begin();
+                vector<countint>::iterator ven=v.end();
+                for(;vit!=ven;++vit){
+                    r.insert(*vit);
+                }
+                countint::clearcount();
+                for(vit=v.begin();vit!=ven;++vit){
+                    r.find(*vit);
+                }
+                avg_turn[i]=countint::getcount()/(double)n;
+                //r.clear();
+            }
+            double sum=0.0;
+            double square=0.0;
+            for(int i=0;i<turn;i++){
+                //cout<<avg_turn[i]<<endl;
+                sum+=avg_turn[i];
+                square+=(avg_turn[i]*avg_turn[i]);
+            }
+            avgcomps=sum/turn;
+            //sigma=sqrt(square/turn-avgcomps*avgcomps);
+	    if(fabs(10000*square/turn-10000*avgcomps*avgcomps)<0.0001)sigma=0;
+            else sigma=sqrt(square/turn-avgcomps*avgcomps);
+            cout<<left<<setw(6)<<n<<left<<setw(8)<<avgcomps<<left<<setw(8)<<sigma<<endl;
+            n=2*n+1;
+        }
+    }
+
+    else if(strcmp(argv[1],"rst")==0&&strcmp(argv[2],"shuffled")==0){
+        int n=1;
+        while(n<=N){
+            
+            double avgcomps=0.0;
+            double sigma=0.0;
+            double avg_turn[turn];
+            for(int i=0;i<turn;i++){
+		RST<countint> r = RST<countint>();
+                vector<countint> v;
+                v.clear();
+                for(int j=0;j<n;j++){
+                    v.push_back(j);
+                }
+                vector<countint>::iterator vit=v.begin();
+                vector<countint>::iterator ven=v.end();
+                std::random_shuffle ( v.begin(), v.end());
+                for(;vit!=ven;++vit){
+                    r.insert(*vit);
+                }
+                countint::clearcount();
+                for(vit=v.begin();vit!=ven;++vit){
+                    r.find(*vit);
+                }
+                avg_turn[i]=countint::getcount()/(double)n;
+                //r.clear();
+            }
+            double sum=0.0;
+            double square=0.0;
+            for(int i=0;i<turn;i++){
+                sum+=avg_turn[i];
+                square+=(avg_turn[i]*avg_turn[i]);
+            }
+            avgcomps=sum/turn;
+            //sigma=sqrt(square/turn-avgcomps*avgcomps);
+	    if(fabs(10000*square/turn-10000*avgcomps*avgcomps)<0.0001)sigma=0;
+            else sigma=sqrt(square/turn-avgcomps*avgcomps);
+            cout<<left<<setw(6)<<n<<left<<setw(8)<<avgcomps<<left<<setw(8)<<sigma<<endl;
+            //cout<<left<<setw(8)<<n<<left<<setw(13)<<avgcomps<<left<<setw(13)<<sigma<<endl;
+            n=2*n+1;
+        }
+    }
+
+    else if(strcmp(argv[1],"bst")==0&&strcmp(argv[2],"sorted")==0){
+        int n=1;
+        while(n<=N){
+            //BST<countint> r = BST<countint>();
+            double avgcomps=0.0;
+            double sigma=0.0;
+            double avg_turn[turn];
+            for(int i=0;i<turn;i++){
+		BST<countint> r = BST<countint>();
+                vector<countint> v;
+                v.clear();
+                for(int j=0;j<n;j++){
+                    v.push_back(j);
+                }
+                vector<countint>::iterator vit=v.begin();
+                vector<countint>::iterator ven=v.end();
+                for(;vit!=ven;++vit){
+                    r.insert(*vit);
+                }
+                countint::clearcount();
+                for(vit=v.begin();vit!=ven;++vit){
+                    r.find(*vit);
+                }
+                avg_turn[i]=countint::getcount()/(double)n;
+                //r.clear();
+            }
+            double sum=0.0;
+            double square=0.0;
+            for(int i=0;i<turn;i++){
+                sum+=avg_turn[i];
+                square+=(avg_turn[i]*avg_turn[i]);
+            }
+            avgcomps=sum/turn;
+            //sigma=sqrt(square/turn-avgcomps*avgcomps);
+	    if(fabs(10000*square/turn-10000*avgcomps*avgcomps)<0.0001)sigma=0;
+            else sigma=sqrt(square/turn-avgcomps*avgcomps);
+            cout<<left<<setw(6)<<n<<left<<setw(8)<<avgcomps<<left<<setw(8)<<sigma<<endl;
+            //cout<<setw(8)<<n<<setw(13)<<avgcomps<<setw(13)<<sigma<<endl;
+            n=2*n+1;
+        }
+    }
+
+    else if(strcmp(argv[1],"bst")==0&&strcmp(argv[2],"shuffled")==0){
+        int n=1;
+        while(n<=N){
+            //BST<countint> r = BST<countint>();
+            double avgcomps=0.0;
+            double sigma=0.0;
+            double avg_turn[turn];
+            for(int i=0;i<turn;i++){
+		BST<countint> r = BST<countint>();
+                vector<countint> v;
+                v.clear();
+                for(int j=0;j<n;j++){
+                    v.push_back(j);
+                }
+                vector<countint>::iterator vit=v.begin();
+                vector<countint>::iterator ven=v.end();
+                std::random_shuffle ( v.begin(), v.end());
+                for(;vit!=ven;++vit){
+                    r.insert(*vit);
+                }
+                countint::clearcount();
+                for(vit=v.begin();vit!=ven;++vit){
+                    r.find(*vit);
+                }
+                avg_turn[i]=countint::getcount()/(double)n;
+                //r.clear();
+            }
+            double sum=0.0;
+            double square=0.0;
+            for(int i=0;i<turn;i++){
+                sum+=avg_turn[i];
+                square+=(avg_turn[i]*avg_turn[i]);
+            }
+            avgcomps=sum/turn;
+            //sigma=sqrt(square/turn-avgcomps*avgcomps);
+	    if(fabs(10000*square/turn-10000*avgcomps*avgcomps)<0.0001)sigma=0;
+            else sigma=sqrt(square/turn-avgcomps*avgcomps);
+            //cout<<setw(8)<<n<<setw(13)<<avgcomps<<setw(13)<<sigma<<endl;
+            cout<<left<<setw(6)<<n<<left<<setw(8)<<avgcomps<<left<<setw(8)<<sigma<<endl;
+            n=2*n+1;
+        }
+    }
+
+    else if(strcmp(argv[1],"set")==0&&strcmp(argv[2],"sorted")==0){
+        int n=1;
+        while(n<=N){
+            //std::set<countint> r = std::set<countint>();
+            double avgcomps=0.0;
+            double sigma=0.0;
+            double avg_turn[turn];
+            for(int i=0;i<turn;i++){
+		std::set<countint> r = std::set<countint>();
+                vector<countint> v;
+                v.clear();
+                for(int j=0;j<n;j++){
+                    v.push_back(j);
+                }
+                vector<countint>::iterator vit=v.begin();
+                vector<countint>::iterator ven=v.end();
+                for(;vit!=ven;++vit){
+                    r.insert(*vit);
+                }
+                countint::clearcount();
+                for(vit=v.begin();vit!=ven;++vit){
+                    r.find(*vit);
+                }
+                avg_turn[i]=countint::getcount()/(double)n;
+                //r.clear();
+            }
+            double sum=0.0;
+            double square=0.0;
+            for(int i=0;i<turn;i++){
+                sum+=avg_turn[i];
+                square+=(avg_turn[i]*avg_turn[i]);
+            }
+            avgcomps=sum/turn;
+	    if(fabs(10000*square/turn-10000*avgcomps*avgcomps)<0.0001)sigma=0;
+            else sigma=sqrt(square/turn-avgcomps*avgcomps);
+            //cout<<setw(8)<<n<<setw(13)<<avgcomps<<setw(13)<<sigma<<endl;
+            cout<<left<<setw(6)<<n<<left<<setw(8)<<avgcomps<<left<<setw(8)<<sigma<<endl;
+            n=2*n+1;
+        }
+    }
+
+    else if(strcmp(argv[1],"set")==0&&strcmp(argv[2],"shuffled")==0){
+        int n=1;
+        while(n<=N){
+            //std::set<countint> r = std::set<countint>();
+            double avgcomps=0.0;
+            double sigma=0.0;
+            double avg_turn[turn];
+            for(int i=0;i<turn;i++){
+		std::set<countint> r = std::set<countint>();
+                vector<countint> v;
+                v.clear();
+                for(int j=0;j<n;j++){
+                    v.push_back(j);
+                }
+                vector<countint>::iterator vit=v.begin();
+                vector<countint>::iterator ven=v.end();
+                std::random_shuffle ( v.begin(), v.end());
+                for(;vit!=ven;++vit){
+                    r.insert(*vit);
+                }
+                countint::clearcount();
+                for(vit=v.begin();vit!=ven;++vit){
+                    r.find(*vit);
+                }
+                avg_turn[i]=countint::getcount()/(double)n;
+                //r.clear();
+            }
+            double sum=0.0;
+            double square=0.0;
+            for(int i=0;i<turn;i++){
+                sum+=avg_turn[i];
+                square+=(avg_turn[i]*avg_turn[i]);
+            }
+            avgcomps=sum/turn;
+            //sigma=sqrt(square/turn-avgcomps*avgcomps);
+	    if(fabs(10000*square/turn-10000*avgcomps*avgcomps)<0.0001)sigma=0;
+            else sigma=sqrt(square/turn-avgcomps*avgcomps);
+            //cout<<setw(8)<<n<<setw(13)<<avgcomps<<setw(13)<<sigma<<endl;
+            cout<<left<<setw(6)<<n<<left<<setw(8)<<avgcomps<<left<<setw(8)<<sigma<<endl;
+            n=2*n+1;
+        }
+    }
+
+
+    return 0;
+}
